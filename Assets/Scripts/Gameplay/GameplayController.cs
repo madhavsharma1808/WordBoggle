@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using WordBoggle.Definations;
 using WordBoggle.InputSystem;
 using WordBoggle.Models;
 using WordBoggle.View;
@@ -8,17 +10,25 @@ namespace WordBoggle.Controllers
 {
     public class GameplayController
     {
-        private GridView _gridView;
+
+        //This is the gamePlayController And is created by a monobehaviour class Gamemanager it hav acces to the view and models. I am going with a MVC pattern for this project as it 
+        //is scalable for adding more gamemodes and functionality in the future
+        protected GridView _gridView;
         private GameModel _gameModel;
-        private GridModel _gridModel;
+        protected GridModel _gridModel;
         private InputManager _inputManager;
-        public GameplayController(GridView gridView, InputManager inputManager, ValidWordsList validWordList)
+        private GameStatsView _gameStatsView;
+        private ObjectiveView _objectiveView;
+        public GameplayController(GameMode mode, GridView gridView, InputManager inputManager, ValidWordsList validWordList, GameStatsView gameStatsView, ObjectiveView objectiveView)
         {
             this._gridView = gridView;
             this._inputManager = inputManager;
-            this._gridModel = new GridModel(4, 4);
-            this._gameModel = new GameModel(new HashSet<string>(validWordList.words));
-            this._gridView.init(this._gridModel.Rows, this._gridModel.Columns, this._gridModel.GetGrid());
+            this._gameStatsView = gameStatsView;
+            this._objectiveView = objectiveView;
+            this._objectiveView.ShowObjective(mode, null);
+            this._gridModel = GameFactory.CreateGridModel(mode);
+            this._gameModel = GameFactory.CreateGameModel(mode, new HashSet<string>(validWordList.words));
+            this._gridView.init(this._gridModel.GetMaxRow(), this._gridModel.GetMaxCol(), this._gridModel.GetGrid());
             this._inputManager.OnPlayerTouch += HandlePlayerTouch;
             this._inputManager.OnPlayerTouchEnd += HandlePlayerTouchEnd;
         }
@@ -44,12 +54,20 @@ namespace WordBoggle.Controllers
         void HandlePlayerTouchEnd()
         {
             string selectedWord = _gridModel.GetSelectedWord();
-           Debug.Log("The selcted word is : "+ selectedWord);
 
-           this._gameModel.checkForvalidWord(selectedWord);
-           Debug.Log("The current game state is : "+ this._gameModel.GetScore() + " : "+ this._gameModel.GetWordsFoundCount());
-           this._gridModel.ClearSelection();
-           this. _gridView.ClearHighlights();
+            if (this._gameModel.checkForvalidWord(selectedWord, this._gridModel.GetGrid(), this._gridModel.GetCurrentlySelectedTiles()))
+            {
+                this.onWordValid();
+            }
+            this._gridModel.ClearSelection();
+            this._gridView.ClearHighlights();
+        }
+
+        protected virtual void onWordValid()
+        {
+            this._gameStatsView.onScoreUpdate(this._gameModel.GetScore(), this._gameModel.GetAveregeScorePerWord());
+            this._gridModel.onWordValid();
+            this._gridView.updateGridView(this._gridModel.GetGrid());
         }
     }
 }

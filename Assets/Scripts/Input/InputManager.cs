@@ -5,7 +5,10 @@ namespace WordBoggle.InputSystem
 {
     public class InputManager : MonoBehaviour
     {
-        public  event Action<Vector2> OnPlayerTouch;
+
+        //This class manages the all the things related to input independently and then calls gameplaycontroller and gameplaycontroller can decide which action to perform . 
+        //So this helps us in mainatianing Single Responsibility principle 
+        public event Action<Vector2> OnPlayerTouch;
         public  event Action OnPlayerTouchEnd;
         private Camera _cam;
         private IInputGetter _inputGetter;

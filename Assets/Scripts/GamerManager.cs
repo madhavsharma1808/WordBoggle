@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using WordBoggle.Controllers;
+using WordBoggle.Definations;
 using WordBoggle.InputSystem;
 using WordBoggle.View;
 
@@ -16,11 +17,14 @@ namespace WordBoggle.Core
         [SerializeField] private GridView _gridView;
         [SerializeField] private InputManager _inputManager;
         [SerializeField] private ValidWordsList _validWordList;
-          private GameplayController _gameplayController;
+        [SerializeField] private GameStatsView _gameStatsView;
+        [SerializeField] private GameModeData _gameModeData;
+        [SerializeField] private ObjectiveView _objectiveView;
+        private GameplayController _gameplayController;
 
         void Start()
         {
-            this._gameplayController = new GameplayController(this._gridView, this._inputManager, this._validWordList);
+            this._gameplayController = GameFactory.CreateGameplayController(_gameModeData.selectedGameMode, this._gridView, this._inputManager, this._validWordList, this._gameStatsView, this._objectiveView);
         }
 
         void OnDestroy()

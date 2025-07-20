@@ -1,6 +1,10 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI; // Needed for Image
+using UnityEngine.Rendering.Universal;
+using UnityEngine.UI;
+using WordBoggle.Definations;
+using WordBoggle.Models;
+using TileGridData = WordBoggle.Models.TileGridData;
 
 namespace WordBoggle.View
 {
@@ -12,10 +16,19 @@ namespace WordBoggle.View
         [SerializeField] private Image _image;
         [SerializeField] private Color _highlightColor;
         [SerializeField] private Color _unhighlightColor;
+        [SerializeField] private GameObject _bonusGameObject;
+        [SerializeField] private GameObject _blockedGameObject;
 
-        public void Init(char letter)
+
+        public void Init(TileGridData tileGridData)
         {
-            _textComponent.text = letter.ToString();
+            this._textComponent.text = tileGridData.Letter.ToString();
+            if (tileGridData.Type == TileType.Blocked)
+            {
+                Debug.Log("It is blocked : " + tileGridData.Letter);
+            }
+            this._bonusGameObject.SetActive(tileGridData.Type == TileType.Bonus);
+            this._blockedGameObject.SetActive(tileGridData.Type == TileType.Blocked);
         }
 
         public void Highlight()

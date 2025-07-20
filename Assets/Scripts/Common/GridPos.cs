@@ -1,3 +1,5 @@
+using WordBoggle.Definations;
+
 namespace WordBoggle.Models
 {
 
@@ -13,6 +15,18 @@ namespace WordBoggle.Models
             Col = col;
         }
 
+    }
 
+    //Just a struct to hold the grid tile data for better readibility
+    public struct TileGridData
+    {
+        public char Letter;
+        public TileType Type;
+
+        public TileGridData(char letter, TileType type)
+        {
+            this.Letter = letter;
+            this.Type = type;
+        }
     }
 }

@@ -7,6 +7,9 @@ using WordBoggle.Models;
 
 namespace WordBoggle.View
 {
+
+    //GridView has all the UI logic . I have kept the Ui and the logical part seperately following the MVC model and its the job of the gameplaycontroller to manage the state of both view and controllers 
+    //This script will manage the UI state of the grid
     public class GridView : MonoBehaviour
     {
         [SerializeField] private GameObject tilePrefab;
@@ -15,11 +18,11 @@ namespace WordBoggle.View
         [SerializeField] private Camera _camera;
         private TileView[,] _tiles;
 
-        public void init(int rows, int columns, char[,] letters)
+        public void init(int rows, int columns, TileGridData[,] letters)
         {
             this.CreateGrid(rows, columns, letters);
         }
-        public void CreateGrid(int rows, int columns, char[,] letters)
+        public void CreateGrid(int rows, int columns, TileGridData[,] letters)
         {
             this._tiles = new TileView[rows, columns];
             for (int row = 0; row < rows; row++)
@@ -69,6 +72,17 @@ namespace WordBoggle.View
         {
             foreach (var tile in this._tiles)
                 tile.UnHighlight();
+        }
+
+        public virtual void updateGridView(TileGridData[,] letters)
+        {
+            for (int row = 0; row < _tiles.GetLength(0); row++)
+            {
+                for (int col = 0; col < _tiles.GetLength(1); col++)
+                {
+                    this._tiles[row, col].Init(letters[row, col]);
+                }
+            }
         }
 
     }
