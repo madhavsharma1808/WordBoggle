@@ -29,7 +29,7 @@ namespace WordBoggle.Core
 
         void OnDestroy()
         {
-            this._gameplayController.DeRegisterListeners();
+            this._gameplayController?.DeRegisterListeners();
         }
 
     }
